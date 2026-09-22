@@ -14,6 +14,7 @@ final class AppRuntime {
             defaults.set(false, forKey: "recordOnLaunch")
             let directory = FileManager.default.temporaryDirectory.appendingPathComponent("SeenDemo-" + UUID().uuidString)
             model = AppModel(defaults: defaults, directory: directory, jevOperation: { _, _, _ in nil })
+            model.jevAvailable = false
         } else { model = AppModel() }
         quickSearch = QuickSearchController(app: model)
     }
