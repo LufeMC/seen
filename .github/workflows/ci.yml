@@ -1,0 +1,28 @@
+name: macOS build and tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: macos-15
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Show toolchain
+        run: swift --version
+      - name: Test
+        run: swift test
+      - name: Build app
+        env:
+          CODE_SIGN_IDENTITY: '-'
+        run: bash scripts/build-app.sh
+      - name: Verify app signature
+        run: codesign --verify --deep --strict dist/Seen.app
